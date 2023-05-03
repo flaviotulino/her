@@ -18,12 +18,11 @@ declare module "handler-express-revised" {
     expressAppInstance: any
   ): void;
 
-  export function createError(
-    status: Number,
-    err: String
-  ): {
+  class CustomError {
     status: Number;
     err: String;
-    isError: Boolean = true;
-  };
+    isError = true;
+  }
+
+  export function createError(status: Number, err: String): CustomError;
 }
