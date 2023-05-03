@@ -2,7 +2,7 @@
   "name": "handler-expressed-revised",
   "private": true,
   "type": "commonjs",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",
   "scripts": {
