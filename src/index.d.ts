@@ -1,20 +1,29 @@
-type Config = {
-  pre?: Array<{}>;
-  prefix?: String;
-};
+declare module "handler-express-revised" {
+  type Config = {
+    pre?: Array<{}>;
+    prefix?: String;
+  };
 
-type Controller = {
-  path: String;
-  method: String;
-  cache?: Boolean | Number;
-  pre?: Array<{}>;
-  handler: Function;
-};
+  export type Handler = {
+    path: String;
+    method: String;
+    cache?: Boolean | Number;
+    pre?: Array<{}>;
+    handler: Function;
+  };
 
-function createServer(
-  config: Config,
-  controllers: Array<Controller>,
-  expressAppInstance: any
-);
+  export function createServer(
+    config: Config,
+    handlers: Array<Handler>,
+    expressAppInstance: any
+  ): void;
 
-export { createServer };
+  export function createError(
+    status: Number,
+    err: String
+  ): {
+    status: Number;
+    err: String;
+    isError: Boolean = true;
+  };
+}

@@ -9,11 +9,17 @@ function createError(status, err) {
   };
 }
 
-function createServer(config, controllers, app) {
-  controllers.forEach((controller) => {
+function createServer(config, handlers, app) {
+  handlers.forEach((controllerHandler) => {
     const globalPreMiddlewars = config.pre || [];
 
-    const { method, handler, path, pre = [], cache = false } = controller;
+    const {
+      method,
+      handler,
+      path,
+      pre = [],
+      cache = false,
+    } = controllerHandler;
 
     if (!handler) {
       console.log("You must define a handler function");
