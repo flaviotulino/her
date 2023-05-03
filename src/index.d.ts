@@ -21,7 +21,6 @@ declare module "handler-express-revised" {
   class CustomError {
     status: Number;
     err: String;
-    isError = true;
   }
 
   export function createError(status: Number, err: String): CustomError;
