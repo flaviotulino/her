@@ -43,10 +43,7 @@ function createServer(config, handlers, app) {
     app[method.toLowerCase()](normalisedPath, async (request, response) => {
       try {
         if (schema) {
-          const { error: validationError } = schema.validate(request);
-          if (validationError) {
-            return response.status(400).json({ err: validationError });
-          }
+          await schema.validateAsync(request);
         }
 
         /* eslint-disable */
