@@ -1,3 +1,4 @@
+import Joi from "joi";
 import NodeCache from "node-cache";
 const MemoryCache = new NodeCache();
 
@@ -78,6 +79,9 @@ function createServer(config, handlers, app) {
         return response;
       } catch (error) {
         console.log(error);
+        if (error instanceof Joi.ValidationError) {
+          return response.status(400).json({ err: error.details.message });
+        }
         if (error.isError) {
           return response.status(error.status).json({ err: error.err });
         }
