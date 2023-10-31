@@ -1,3 +1,5 @@
+import Joi from "joi";
+
 declare module "handler-express-revised" {
   type Config = {
     pre?: Array<{}>;
@@ -9,6 +11,7 @@ declare module "handler-express-revised" {
     method: String;
     cache?: Boolean | Number;
     pre?: Array<{}>;
+    schema?: Joi.Schema;
     handler: Function;
   };
 
