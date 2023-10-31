@@ -12,6 +12,8 @@ declare module "handler-express-revised" {
     handler: Function;
   };
 
+  export function createHandler(handler: Handler): Handler;
+
   export function createServer(
     config: Config,
     handlers: Array<Handler>,

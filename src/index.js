@@ -9,6 +9,10 @@ function createError(status, err) {
   };
 }
 
+function createHandler(handler) {
+  return handler;
+}
+
 function createServer(config, handlers, app) {
   handlers.forEach((controllerHandler) => {
     const globalPreMiddlewars = config.pre || [];
@@ -19,6 +23,7 @@ function createServer(config, handlers, app) {
       path,
       pre = [],
       cache = false,
+      schema = false,
     } = controllerHandler;
 
     if (!handler) {
@@ -37,6 +42,13 @@ function createServer(config, handlers, app) {
 
     app[method.toLowerCase()](normalisedPath, async (request, response) => {
       try {
+        if (schema) {
+          const { error: validationError } = schema.validate(request);
+          if (validationError) {
+            throw validationError;
+          }
+        }
+
         /* eslint-disable */
         for (const pre of preMiddlewares) {
           await pre(request, response);
@@ -79,4 +91,4 @@ function createServer(config, handlers, app) {
   });
 }
 
-export { createError, createServer };
+export { createError, createServer, createHandler };
