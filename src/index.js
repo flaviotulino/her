@@ -45,7 +45,7 @@ function createServer(config, handlers, app) {
         if (schema) {
           const { error: validationError } = schema.validate(request);
           if (validationError) {
-            throw validationError;
+            return response.status(400).json({ err: validationError });
           }
         }
 
