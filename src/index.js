@@ -44,7 +44,7 @@ function createServer(config, handlers, app) {
       try {
         if (schema) {
           const { error } = schema.validate(request);
-          if (error) throw createError(400, error.details.message);
+          if (error) throw createError(400, error.details[0].message);
         }
 
         /* eslint-disable */
