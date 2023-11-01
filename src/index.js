@@ -1,4 +1,3 @@
-import Joi from "joi";
 import NodeCache from "node-cache";
 const MemoryCache = new NodeCache();
 
@@ -44,7 +43,8 @@ function createServer(config, handlers, app) {
     app[method.toLowerCase()](normalisedPath, async (request, response) => {
       try {
         if (schema) {
-          await schema.validateAsync(request);
+          const { error } = schema.validate(request);
+          if (error) throw error;
         }
 
         /* eslint-disable */
@@ -78,8 +78,7 @@ function createServer(config, handlers, app) {
 
         return response;
       } catch (error) {
-        console.log(error);
-        if (error instanceof Joi.ValidationError) {
+        if (error.name === "ValidationError") {
           return response.status(400).json({ err: error.details.message });
         }
         if (error.isError) {
