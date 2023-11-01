@@ -44,7 +44,7 @@ function createServer(config, handlers, app) {
       try {
         if (schema) {
           const { error } = schema.validate(request);
-          if (error) throw error;
+          if (error) throw createError(400, error.details.message);
         }
 
         /* eslint-disable */
@@ -78,9 +78,6 @@ function createServer(config, handlers, app) {
 
         return response;
       } catch (error) {
-        if (error.name === "ValidationError") {
-          return response.status(400).json({ err: error.details.message });
-        }
         if (error.isError) {
           return response.status(error.status).json({ err: error.err });
         }
