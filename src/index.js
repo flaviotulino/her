@@ -43,7 +43,7 @@ function createServer(config, handlers, app) {
     app[method.toLowerCase()](normalisedPath, async (request, response) => {
       try {
         if (schema) {
-          const { error } = schema.validate(request);
+          const { error } = schema.validate(request, { allowUnknown: true });
           if (error) throw createError(400, error.details[0].message);
         }
 
