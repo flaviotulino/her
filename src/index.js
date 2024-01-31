@@ -40,51 +40,55 @@ function createServer(config, handlers, app) {
     const prefix = config.prefix || "";
     const normalisedPath = `/${prefix}/${path}`.replace(/\/+/g, "/");
 
-    app[method.toLowerCase()](normalisedPath, async (request, response) => {
-      try {
-        if (schema) {
-          const { error } = schema.validate(request, { allowUnknown: true });
-          if (error) throw createError(400, error.details[0].message);
-        }
-
-        /* eslint-disable */
-        for (const pre of preMiddlewares) {
-          await pre(request, response);
-        }
-        /* eslint-enable */
-
-        if (cache && method === "GET") {
-          const cachedResult = MemoryCache.get(request.originalUrl);
-          if (cachedResult) {
-            return response
-              .status(200)
-              .set("X-Cached", true)
-              .json(cachedResult);
+    app[method.toLowerCase()](
+      normalisedPath,
+      [...preMiddlewares],
+      async (request, response) => {
+        try {
+          if (schema) {
+            const { error } = schema.validate(request, { allowUnknown: true });
+            if (error) throw createError(400, error.details[0].message);
           }
-        }
 
-        const result = await handler(request, response);
+          // /* eslint-disable */
+          // for (const pre of preMiddlewares) {
+          //   await pre(request, response);
+          // }
+          // /* eslint-enable */
 
-        if (result) {
           if (cache && method === "GET") {
-            MemoryCache.set(
-              request.originalUrl,
-              result,
-              cache === true ? 0 : parseInt(cache, 10)
-            );
+            const cachedResult = MemoryCache.get(request.originalUrl);
+            if (cachedResult) {
+              return response
+                .status(200)
+                .set("X-Cached", true)
+                .json(cachedResult);
+            }
           }
-          return response.status(200).json(result);
-        }
 
-        return response;
-      } catch (error) {
-        if (error.isError) {
-          return response.status(error.status).json({ err: error.err });
-        }
+          const result = await handler(request, response);
 
-        return response.status(500).json({ error: error.message });
+          if (result) {
+            if (cache && method === "GET") {
+              MemoryCache.set(
+                request.originalUrl,
+                result,
+                cache === true ? 0 : parseInt(cache, 10)
+              );
+            }
+            return response.status(200).json(result);
+          }
+
+          return response;
+        } catch (error) {
+          if (error.isError) {
+            return response.status(error.status).json({ err: error.err });
+          }
+
+          return response.status(500).json({ error: error.message });
+        }
       }
-    });
+    );
   });
 }
 
