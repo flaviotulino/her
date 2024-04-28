@@ -1,6 +1,8 @@
 import NodeCache from "node-cache";
 const MemoryCache = new NodeCache();
 
+const allRoutes = [];
+
 function createError(status, err) {
   return {
     isError: true,
@@ -36,26 +38,34 @@ function createServer(config, handlers, app) {
       process.exit(-1);
     }
 
-    const preMiddlewares = [...globalPreMiddlewars, ...pre];
+    const preMiddlewares = [...globalPreMiddlewars];
+
     const prefix = config.prefix || "";
     const normalisedPath = `/${prefix}/${path}`.replace(/\/+/g, "/");
+
+    allRoutes.push({
+      path: normalisedPath,
+      handler,
+      method,
+      schema,
+      cache,
+    });
+
+    if (schema) {
+      preMiddlewares.push((request, response) => {
+        const { error } = schema.validate(request, { allowUnknown: true });
+        if (error)
+          return response.status(400).json({ error: error.details[0].message });
+      });
+    }
+
+    preMiddlewares.push(...pre);
 
     app[method.toLowerCase()](
       normalisedPath,
       [...preMiddlewares],
       async (request, response) => {
         try {
-          if (schema) {
-            const { error } = schema.validate(request, { allowUnknown: true });
-            if (error) throw createError(400, error.details[0].message);
-          }
-
-          // /* eslint-disable */
-          // for (const pre of preMiddlewares) {
-          //   await pre(request, response);
-          // }
-          // /* eslint-enable */
-
           if (cache && method === "GET") {
             const cachedResult = MemoryCache.get(request.originalUrl);
             if (cachedResult) {
@@ -92,4 +102,8 @@ function createServer(config, handlers, app) {
   });
 }
 
-export { createError, createServer, createHandler };
+function getRoutes() {
+  return allRoutes;
+}
+
+export { createError, createServer, createHandler, getRoutes };

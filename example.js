@@ -8,9 +8,9 @@ app.use(express.json());
 const r = her.createHandler({
   path: "/",
   method: "GET",
-  schema: Joi.object({
-    body: Joi.boolean(),
-  }),
+  // schema: Joi.object({
+  //   body: Joi.boolean(),
+  // }),
   handler() {
     return "test";
   },
