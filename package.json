@@ -1,7 +1,7 @@
 {
   "name": "handler-express-revised",
   "type": "commonjs",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "main": "dist/index.js",
   "scripts": {
     "build": "rollup -c",
