@@ -54,12 +54,14 @@ function createServer(config, handlers, app) {
     });
 
     if (schema && schema.request) {
-      preMiddlewares.push((request, response) => {
+      preMiddlewares.push((request, response, next) => {
         const { error } = schema.request.validate(request, {
           allowUnknown: true,
         });
-        if (error)
+        if (error) {
           return response.status(400).json({ error: error.details[0].message });
+        }
+        next();
       });
     }
 
