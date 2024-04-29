@@ -1,3 +1,4 @@
+import Joi from "joi";
 import NodeCache from "node-cache";
 const MemoryCache = new NodeCache();
 
@@ -51,9 +52,11 @@ function createServer(config, handlers, app) {
       cache,
     });
 
-    if (schema) {
+    if (schema && schema.request) {
       preMiddlewares.push((request, response) => {
-        const { error } = schema.validate(request, { allowUnknown: true });
+        const { error } = schema.request.validate(request, {
+          allowUnknown: true,
+        });
         if (error)
           return response.status(400).json({ error: error.details[0].message });
       });
