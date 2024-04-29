@@ -45,7 +45,8 @@ function createServer(config, handlers, app) {
     const normalisedPath = `/${prefix}/${path}`.replace(/\/+/g, "/");
 
     allRoutes.push({
-      path: normalisedPath,
+      fullPath: normalisedPath,
+      path,
       handler,
       method,
       schema,
