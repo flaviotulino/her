@@ -55,7 +55,7 @@ function createServer(config, handlers, app) {
 
     if (schema && schema.request) {
       preMiddlewares.push((request, response, next) => {
-        console.log(schema.request);
+        
         const { error } = schema.request.validate(request, {
           allowUnknown: true,
         });
