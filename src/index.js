@@ -100,7 +100,7 @@ function createServer(config, handlers, app) {
           return response;
         } catch (error) {
           if (error.isError) {
-            return response.status(error.status).json({ err: error.err });
+            return response.status(error.status).json({ error: error.err });
           }
 
           return response.status(500).json({ error: error.message });
