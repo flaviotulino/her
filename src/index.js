@@ -4,11 +4,12 @@ const MemoryCache = new NodeCache();
 
 const allRoutes = [];
 
-function createError(status, err) {
+function createError(status, err, extra) {
   return {
     isError: true,
     status,
     err,
+    extra,
   };
 }
 
@@ -100,7 +101,7 @@ function createServer(config, handlers, app) {
           return response;
         } catch (error) {
           if (error.isError) {
-            return response.status(error.status).json({ error: error.err });
+            return response.status(error.status).json({ error: error.err, ...error.extra });
           }
 
           return response.status(500).json({ error: error.message });
