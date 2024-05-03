@@ -4,7 +4,7 @@ const MemoryCache = new NodeCache();
 
 const allRoutes = [];
 
-function createError(status, err, extra) {
+function createError(status, err, extra = {}) {
   return {
     isError: true,
     status,
