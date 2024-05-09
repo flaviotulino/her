@@ -68,7 +68,7 @@ function createServer(config, handlers, app) {
         next();
       }
 
-      preMiddlewares.push(config.validationMiddleware || defaultValidationMiddleware);
+      preMiddlewares.push(config.validationMiddleware.bind(schema) || defaultValidationMiddleware);
     }
 
     preMiddlewares.push(...pre);
