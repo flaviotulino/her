@@ -55,17 +55,20 @@ function createServer(config, handlers, app) {
     });
 
     if (schema && schema.request) {
-      preMiddlewares.push((request, response, next) => {
+      const defaultValidationMiddleware = (request, response, next) => {
         
         const { error } = schema.request.validate(request, {
           allowUnknown: true,
+          
         });
         if (error) {
           const message = error instanceof Error ? error.message :  error.details[0].message;
           return response.status(400).json({ error: message });
         }
         next();
-      });
+      }
+
+      preMiddlewares.push(config.validationMiddleware || defaultValidationMiddleware);
     }
 
     preMiddlewares.push(...pre);
